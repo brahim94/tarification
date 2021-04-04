@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <!-- Res Partner -->
+        <record id="view_partner_form_inherit_wt" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.wt</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="code_anp" position="replace">
+                </field>
+                <field name="rc" position="after">
+                    <field name="code_anp" attrs="{'invisible': [('categ_code', '!=', 'CONS')], 'required': [('categ_code', '=', 'CONS')]}"/>
+                    <field name="number_limit_container" attrs="{'invisible': [('categ_code', '!=', 'M')], 'required': [('categ_code', '=', 'M')]}"/>
+                    <!-- <field name="custom_office_id" attrs="{'invisible': [('categ_code', 'not in', ('M'))], 'required': [('categ_code', 'in', ('M'))]}"/>
+                    <field name="custom_office_cin_code" attrs="{'invisible': [('categ_code', 'not in', ('M'))], 'required': [('categ_code', 'in', ('M'))]}"/> -->
+
+                    <field name="metle_attachment_name" invisible="1"/>
+                    <field name="metle_attachment_id" filename="metle_attachment_name" attrs="{'invisible': [('categ_code', '!=', 'FRET_FWD')]}"/>
+
+                    <field name="oc_attachment_name" invisible="1"/>
+                    <field name="oc_attachment_id" filename="oc_attachment_name" attrs="{'invisible': [('categ_code', '!=', 'FRET_FWD')]}"/>
+
+                </field>
+                <field name="centre_rc" position="after">
+                    <!-- <field name="code_douane" attrs="{'invisible': [('categ_code', 'not in', ('FRET_FWD'))], 'required': [('categ_code', 'in', ('FRET_FWD'))]}"/> -->
+                    <field name="edi_code" attrs="{'invisible': [('categ_code', '!=', 'M')], 'required': [('categ_code', '=', 'M')]}"/>
+                    <field name="code_port" attrs="{'invisible': [('categ_code', '!=', 'M')], 'required': [('categ_code', '=', 'M')]}"/>
+                </field>
+                <field name="portnet_user_ids" position="attributes">
+                    <attribute name="context">{'default_categ_code': categ_code}</attribute>
+                </field>
+                <xpath expr="//sheet//field[@name='portnet_user_ids']//tree//field[@name='email']" position="after">
+                    <field name="categ_code" invisible="1"/>
+                    <field name="custom_office_id" attrs="{'readonly': [('categ_code', '!=', 'CONS')], 'required': [('categ_code', '=', 'CONS')]}" force_save="1"/>
+                    <field name="custom_office_cin_code" attrs="{'readonly': [('categ_code', '!=', 'CONS')], 'required': [('categ_code', '=', 'CONS')]}" force_save="1"/>
+                </xpath>
+                <page name="users_portnet" position="after">
+                    <page name="code_t_custom_lines" string="Bureau Douanier" attrs="{'invisible': [('categ_code', 'not in', ('T', 'M'))]}">
+                        <field name="custom_office_line_ids">
+                            <tree editable="bottom">
+                                <field name="custom_office_id"/>
+                                <field name="custom_office_cin_code"/>
+                            </tree>
+                        </field>
+                    </page>
+                </page>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contract_service_line,access_contract_service_line,model_contract_service_line,,1,1,1,1
+access_res_transaction,access_res_transaction,model_res_transaction,,1,1,1,1
+access_custom_office,access_custom_office,model_custom_office,,1,1,1,1
+access_code_port,access_code_port,model_code_port,,1,1,1,1
+access_custom_office_line,access_custom_office_line,model_custom_office_line,,1,1,1,1

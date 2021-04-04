@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+         <record id="contract_validation_wizard_view_inherit" model="ir.ui.view">
+            <field name="name">contract.validation.wizard.inherit.wt</field>
+            <field name="model">contract.validation.wizard</field>
+            <field name="inherit_id" ref="portnet_invoicing.contract_validation_wizard_view"/>
+            <field name="arch" type="xml">
+                <field name="choice" position="after">
+                    <field name="type_contract" invisible="1"/>
+                </field>
+                <field name="date" position="attributes">
+                    <attribute name="attrs">{'invisible': [('choice','=','no_create')],'required':[('choice','=','create')], 'readonly': [('type_contract', '!=', 'abonnement')]}</attribute>
+                </field>
+                <field name="next_seq" position="attributes">
+                    <attribute name="attrs">{'invisible': [('type_contract', '!=', 'abonnement')]}</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

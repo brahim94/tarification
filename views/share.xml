@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="share assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/portnet_newtarification/static/src/css/share.css"/>
+                <script type="text/javascript" src="/portnet_newtarification/static/src/js/share.js"></script>
+            </xpath>
+        </template>
+    </data>
+</openerp>

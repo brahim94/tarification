@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>  
+        <!-- Tree View -->  
+        <record id="custom_office_tree_view" model="ir.ui.view">
+            <field name="name">custom.office.tree.view</field>
+            <field name="model">custom.office</field>
+            <field name="arch" type="xml">
+                <tree string="Bureau Douanier">
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="custom_office_form_view" model="ir.ui.view">
+            <field name="name">custom.office.form.view</field>
+            <field name="model">custom.office</field>
+            <field name="arch" type="xml">
+                <form string="Bureau Douanier">
+                    <sheet string="Bureau Douanier">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="code"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Bureau Douanier -->
+        <record id="action_custom_office" model="ir.actions.act_window">
+            <field name="name">Bureau Douanier</field>
+            <field name="res_model">custom.office</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cliquer ici pour créer un nouveau Bureau Douanier
+                </p>
+            </field>
+        </record>
+
+        <!-- menuitem -->
+        <menuitem action="action_custom_office" id="menu_custom_office" name="Bureau Douanier" parent="base.menu_base_config" />
+    </data>
+</openerp>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>  
+        <!-- Tree View -->  
+        <record id="advanced_res_transaction_tree_view" model="ir.ui.view">
+            <field name="name">res.transaction.tree.view</field>
+            <field name="model">res.transaction</field>
+            <field name="arch" type="xml">
+                <tree string="Transaction">
+                    <field name="name" string="Transaction Id"/>
+                    <field name="contract_id" string="Contract"/>
+                    <field name="event_ref" string="Event Ref"/>
+                    <field name="date" string="Date"/>
+                    <field name="user" string="User"/>
+                    <field name="cancel_date" string="cancel date"/>
+                    <field name="motif" string="Motif"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="advanced_res_transaction_form_view" model="ir.ui.view">
+            <field name="name">res.transaction.form.view</field>
+            <field name="model">res.transaction</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <form string="Transaction">
+                       <header>
+                            <field name="state"  widget="statusbar"
+                                statusbar_visible="valid,cancelled" statusbar_colors='{"cancelled":"red","valid":"green"}'/>
+                       </header>
+                    <sheet string="Transaction">
+
+                        <div class="oe_title">
+                        <label for="name" class="oe_edit_only" string="Transaction" />
+                            <h1>
+                                <field name="name" class="oe_inline" />
+                            </h1>
+                        <label for="contract_id" string="Package"/>
+                            <h3>
+                                <field name="contract_id" class="oe_inline"/>
+                            </h3>
+                        </div>
+                        <group>
+                            <group>
+                                
+                                <field name="event_ref" string="Event Ref"/>
+                                <field name="date" string="Date"/>
+                                 <field name="user" string="User"/>
+                            </group>
+                            <group>
+                                <field name="cancel_date" string="Cancel Date"/>
+                                <field name="motif" string="Motif"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="advanced_res_transaction_search" model="ir.ui.view">
+            <field name="name">res.transaction.tmpl.search</field>
+            <field name="model">res.transaction</field>
+            <field name="arch" type="xml">
+                <search string="Transactions">
+                    <field name="name" filter_domain="[('name','ilike',self)]" string="Transaction"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action transaction -->
+        <record id="action_res_transaction" model="ir.actions.act_window">
+            <field name="name">Transactions</field>
+            <field name="res_model">res.transaction</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain"></field>
+            <field name="search_view_id" ref="advanced_res_transaction_search"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cliquer ici pour créer un nouveau transaction
+                </p>
+            </field>
+        </record>
+
+        <!-- menuitem -->
+        <menuitem action="action_res_transaction" id="menu_res_transaction" name="Transactions" parent="base.menu_base_config" />
+    </data>
+</openerp>

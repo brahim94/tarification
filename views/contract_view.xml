@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        
+
+        <!-- Contract Customization Form View 
+        <record id="advanced_contract_form_view_inherit_wt" model="ir.ui.view">
+            <field name="name">res.contract.form.inherit.wt</field>
+            <field name="model">res.contract</field>
+            <field name="inherit_id" ref="portnet_invoicing.advanced_contract_form_view" />
+            <field name="arch" type="xml">
+                <button name="set_draft" position="after">
+                    <button name="action_disactive" string="Désactiver" type="object" attrs="{'invisible': [('active','=',False)]}"/>
+                    <button name="action_active" string="Activer" type="object" attrs="{'invisible': [('active','!=',False)]}"/>
+                    <button name="action_sync_GU" string="Synchroniser GU" type="object" attrs="{'invisible': [('active','=',False)]}"/>
+                </button>
+                <label for="name" position="after">
+                    <label for="name_package" class="oe_edit_only" string="Code Package" attrs="{'invisible': [('type_contract', '=', 'package')]}"/>
+                </label>
+                <label for="name" position="replace">
+                    <label for="name" class="oe_edit_only" string="N° Souscription" attrs="{'invisible': [('type_contract', 'not in', ('package'))]}"/>
+                </label>
+                <separator string="Informations contrat" position="before">
+                        <separator string="Type Contract" colspan="2"/>
+                        <field name="active" invisible="1"/>
+                        <field name="type_contract" attrs="{'readonly': [('state','in',['pending','closed'])]}"/>
+                </separator>
+                <field name="template_id" position="attributes">
+                    <attribute name="string">Rôle de l'opérateur</attribute>
+                    <attribute name="domain">[('type_contract', '=', type_contract)]</attribute>
+                </field>
+                <field name="tacite" position="after">
+                    <field name="criteria_factures" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="type_paiment" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="debut_validate" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="type_service" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="service_fee" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="description_package" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                </field>
+                <field name="product_id" position="after">
+                    <field name="parameter_decompte" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="validate_package" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="transaction_no" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                    <field name="transaction_no_limit" attrs="{'invisible': [('type_contract', '!=', 'package')]}"/>
+                </field>
+                <sheet position="inside">
+                    <group attrs="{'invisible': [('type_contract', '!=', 'package')]}">
+                        <field name="type_service_line_ids" nolabel="1" attrs="{'invisible': [('type_service', '!=', 'tranches')]}">
+                            <tree editable="bottom">
+                                <field name="id_tranche"/>
+                                <field name="tranche_de_no"/>
+                                <field name="tranche_a_no"/>
+                                <field name="frais_de_services"/>
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Souscription package" attrs="{'invisible': [('type_contract', '!=', 'package')]}">
+                        <group>
+                            <field name="total_subscription"/>
+                            <field name="total_expire"/>
+                        </group>
+                        <group>
+                            <field name="total_encourse"/>
+                            <field name="total_suspended"/>
+                        </group>
+                    </group>
+                    <group string="API" attrs="{'invisible': [('type_contract', '!=', 'package')]}">
+                        <group>
+                            <field name="id_portnet"/>
+                            <field name="date_create_portnet"/>
+                            <field name="date_write_portnet"/>
+                            <field name="date_sync_portnet"/>
+                        </group>
+                        <group></group>
+                    </group>
+                </sheet>
+                <sheet position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </sheet>
+            </field>
+        </record>-->
+        <!-- _______________________________ package____________________________-->
+        <record id="advanced_contract_tmpl_form_view_package" model="ir.ui.view">
+            <field name="name">advanced.contract.tmpl.form.view</field>
+            <field name="model">res.contract</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="Package">
+                    <header>
+                        <button name="action_sync_GU" string="Synchroniser GU" type="object" attrs="{'invisible': [('active_package','=','Inactif')]}"/>
+                        <field name="active_package" clickable="1" widget="statusbar" statusbar_visible="Actif,Inactif"/>
+                    </header>
+                    <sheet string="Package">
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="Code package" placeholder="Code package"/>
+                            <h1>
+                                <field name="name" class="oe_inline" readonly="1"/>
+                            </h1>
+                            <label for="partner_categ_id" class="oe_edit_only" string="Rôle de l'opérateur" placeholder="Rôle de l'opérateur"/>
+                            <h3>
+                                <field name="partner_categ_id" placeholder="Rôle de l'opérateur" class="oe_inline"/>
+                            </h3>
+                        </div>
+                        <group col="4" colspan="4">
+                            <group colspan="2">
+                                <separator string="Informations facturation" colspan="2"/>
+                                <field name="pricelist_id" domain="[('type','=','sale')]" readonly="1"/>
+                                <field name="currency_id" required="1"/>
+                                <field name="tacite"/>
+                                <field name="criteria_factures"/>
+                                <field name="type_paiment"/>
+                                <field name="debut_validate"/>
+                                <field name="type_service" string="Type de frais"/>
+                                <field name="service_fee" attrs="{'readonly': [('type_service', 'in', ('tranches'))], 'invisible': [('type_service', 'in', ('tranches', 'aucun'))]}" string="Frais de transaction"/>
+                                <field name="description_package" string="Description"/>
+                                <field name="type_contract" invisible="1"/>
+                                <field name="active" invisible="1"/>
+                            </group>
+                            <group colspan="2">
+                                <separator string="Informations contrat" colspan="2"/>
+                                <field name="product_category_id"/>
+                                <field name="product_id" attrs="{'invisible': [('product_category_id','=',False)]}"/>
+                                <field name="parameter_decompte"/>
+                                <field name="validate_package"/>
+                                <field name="transaction_no"/>
+                                <field name="transaction_no_limit" string=" " attrs="{'invisible': [('transaction_no', '!=', 'transaction_limit')]}"/>
+                                <field name="amount" string="Frais d’accès annuel" attrs="{'required': [('transaction_no', '=', 'transaction_limit')]}"/>
+                                <field name="periodicity_id"/>
+                            </group>
+                        </group>
+                        <separator string="Tranches" colspan="2" attrs="{'invisible': [('type_service', 'not in', ('tranches'))]}"/>
+                        <div style="text-align: right;" attrs="{'invisible': [('type_service', 'not in', ('tranches'))]}">
+                            <button name="update_data" type="object" string="Update Tranches" class="oe_link oe_edit_only" icon="fa-gratipay"/>
+                        </div>
+                        <field name="type_service_line_ids" nolabel="1" context="{'contract_id': id, 'transaction_no_limit': transaction_no_limit}" attrs="{'invisible': [('type_service', 'not in', ('tranches'))]}">
+                            <tree editable="bottom">
+                                <field name="id_tranche"/>
+                                <field name="tranche_de_no"/>
+                                <field name="tranche_a_no"/>
+                                <field name="frais_de_services"/>
+                            </tree>
+                        </field>
+                        <group string="Consommation" col="8" colspan="4">
+                            <field name="total_subscription" readonly="1"/>
+                            <field name="total_expire" readonly="1"/>
+                            <field name="total_encourse" readonly="1"/>
+                            <field name="total_suspended" readonly="1"/>
+                        </group>
+                        <group string="API" colspan="4" col="8">
+                            <field name="id_portnet" readonly="1"/>
+                            <field name="date_create_portnet" readonly="1"/>
+                            <field name="date_write_portnet" readonly="1"/>
+                            <field name="date_sync_portnet" readonly="1"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="advanced_contract_tmpl_tree_view_package" model="ir.ui.view">
+            <field name="name">advanced.contract.tmpl.tree.view</field>
+            <field name="model">res.contract</field>
+            <field name="arch" type="xml">
+                <tree string="Package">
+                    <field name="name" string="Code package"/>
+                    <field name="partner_categ_id" string="Rôle de l'opérateur"/>
+                    <field name="product_category_id" string="Catégorie du produit"/>
+                    <field name="amount" required="1" readonly="1" string="Frais d’accès annuel"/>
+                    <field name="product_id"/>
+                    <field name="periodicity_id" string="Type de périodicité"/>
+                    <field name="currency_id"/>
+                    <field name="service_fee" string="Frais de transaction"/>
+                    <field name="type_contract" invisible="1"/>
+                    <field name="active_package"/>
+                    <field name="active" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="advanced_contract_tmpl_search_package" model="ir.ui.view">
+            <field name="name">advanced.contract.tmpl.search</field>
+            <field name="model">res.contract</field>
+            <field name="arch" type="xml">
+                <search string="Package">
+                    <field name="name" filter_domain="[('name','ilike',self)]" string="Nom"/>
+                    <field name="product_id" filter_domain="['|', ('product_id','ilike',self)]" string="Produit"/>
+                    <field name="product_category_id" filter_domain="['|', ('product_category_id','ilike',self)]" string="Catégorie de produit"/>
+                    <filter string="Tacite reconduction" domain="[('tacite','=',True)]"/>
+                </search>
+            </field>
+        </record>
+        <!-- Action Ventes/Configuration/ Package -->
+        <record id="action_contracts_tmpl_package" model="ir.actions.act_window">
+            <field name="name">Package</field>
+            <field name="res_model">res.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_template','=',True),('type_contract','=','package')]</field>
+            <field name="context">{'default_is_template':True,'default_type_contract':'package'}</field>
+            <field name="search_view_id" ref="advanced_contract_tmpl_search_package"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cliquer ici pour créer un nouveau package
+                </p>
+            </field>
+        </record>
+        <record id="action_contracts_tmpl_tree_package" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="advanced_contract_tmpl_tree_view_package"/>
+            <field name="act_window_id" ref="action_contracts_tmpl_package"/>
+        </record>
+        <record id="action_contracts_tmpl_form_package" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="advanced_contract_tmpl_form_view_package"/>
+            <field name="act_window_id" ref="action_contracts_tmpl_package"/>
+        </record>
+        <menuitem action="action_contracts_tmpl_package" id="menu_contracts_tmpl_package" name="Packages" parent="base.menu_base_config" groups="base.group_sale_manager,account.group_account_manager"/>
+        <!-- Action Ventes/Configuration/ Modèles de contrats -->
+        <record id="portnet_invoicing.action_contracts_tmpl" model="ir.actions.act_window">
+            <field name="name">Modèles de contrats</field>
+            <field name="res_model">res.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_template','=',True),('type_contract','=','abonnement')]</field>
+            <field name="context">{'default_is_template':True,'deault_type_contract':'abonnement'}</field>
+            <field name="search_view_id" ref="portnet_invoicing.advanced_contract_tmpl_search"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cliquer ici pour créer un nouveau contrat
+                </p>
+            </field>
+        </record>
+        <record id="portnet_invoicing.action_contracts_tmpl_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="portnet_invoicing.advanced_contract_tmpl_tree_view"/>
+            <field name="act_window_id" ref="portnet_invoicing.action_contracts_tmpl"/>
+        </record>
+        <record id="portnet_invoicing.action_contracts_tmpl_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="portnet_invoicing.advanced_contract_tmpl_form_view"/>
+            <field name="act_window_id" ref="portnet_invoicing.action_contracts_tmpl"/>
+        </record>
+        <!-- Action Ventes/Ventes/Contrats -->
+        <record id="portnet_invoicing.action_contracts" model="ir.actions.act_window">
+            <field name="name">Contrats</field>
+            <field name="res_model">res.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_template','=',False),('type_contract','=','abonnement')]</field>
+            <field name="context">{'default_is_template':False,'default_type_contract':'abonnement'}</field>
+            <field name="search_view_id" ref="portnet_invoicing.advanced_contract_search"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cliquer ici pour créer un nouveau contrat
+                </p>
+            </field>
+        </record>
+        <record id="portnet_invoicing.action_contracts_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="portnet_invoicing.advanced_contract_tree_view"/>
+            <field name="act_window_id" ref="portnet_invoicing.action_contracts"/>
+        </record>
+        <record id="portnet_invoicing.action_contracts_form" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="portnet_invoicing.advanced_contract_form_view"/>
+            <field name="act_window_id" ref="portnet_invoicing.action_contracts"/>
+        </record>
+        <!--_______________________________________Souscription______________________________________-->
+        <record id="advanced_contract_form_view_souscription" model="ir.ui.view">
+            <field name="name">advanced.souscription.form.view</field>
+            <field name="model">res.contract</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <form string="Souscription">
+                    <header>
+                        <button name="action_validate" string="Valider" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="oe_highlight" groups="purchase.group_purchase_manager,base.group_sale_manager,account.group_account_manager"/>
+                        <button name="set_closed" string="Clôturer" type="object" attrs="{'invisible': [('state','!=','pending')]}" class="oe_highlight" groups="purchase.group_purchase_manager,base.group_sale_manager,account.group_account_manager"/>
+                        <button name="set_draft" string="Mettre en brouillon" type="object" attrs="{'invisible': [('state','=','draft')]}" class="oe_highlight" groups="purchase.group_purchase_manager,base.group_sale_manager,account.group_account_manager"/>
+                        <button name="action_sync_GU" string="Synchroniser GU" type="object"/>
+                        <button name="action_suspend" string="Suspendre" type="object" states="pending"/>
+                        <button name="action_reactive" string="Réactiver" type="object" states="suspend"/>
+                        <field name="state" readonly="1" widget="statusbar" statusbar_visible="opened,pending,expire,suspend,closed" statusbar_colors="{&quot;pending&quot;:&quot;red&quot;, &quot;draft&quot;:&quot;blue&quot;, &quot;closed&quot;:&quot;green&quot;}"/>
+                    </header>
+                    <sheet string="Contrat">
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" string="N° Souscriptions"/>
+                            <h1>
+                                <field name="name" class="oe_inline" readonly="1"/>
+                            </h1>
+                            <label for="template_id" class="oe_edit_only" string="Package" placeholder="Package"/>
+                            <h3>
+                                <field name="template_id" placeholder="Package" class="oe_inline" attrs="{'readonly': [('state','in',['pending','closed'])]}" domain="[('type_contract','=','package'), ('is_template', '=', True), ('active_package', '=', 'Actif')]" context="{'default_is_template':True,'default_type_contract':'package'}"/>
+                            </h3>
+                        </div>
+                        <group col="4" colspan="4">
+                            <group colspan="2">
+                                <separator string="Informations client" colspan="2"/>
+                                <field name="partner_categ_id" required="1" attrs="{'readonly': [('state','in',['pending','closed'])]}" string="Rôle de l'opérateur"/>
+                                <field name="partner_id" required="1" domain="[('customer','=',True),('categ_id','=',partner_categ_id)]" attrs="{'invisible': [('partner_categ_id','=',False)],'readonly': [('state','in',['pending','closed'])]}" string="Opérateur"/>
+                                <separator string="Informations facturation" colspan="2"/>
+                                <field name="pricelist_id" domain="[('type','=','sale')]" readonly="1"/>
+                                <field name="currency_id" required="1" attrs="{'readonly': [('state','in',['pending','closed'])]}"/>
+                                <field name="first_invoice_date" invisible="1"/>
+                                <field name="next_invoice_date" invisible="1"/>
+                                <field name="anticipated_invoice_date" invisible="1"/>
+                                <field name="tacite" attrs="{'readonly': [('state','in',['pending','closed'])]}"/>
+                                <field name="criteria_factures" readonly="1" force_save="1"/>
+                                <field name="type_paiment"/>
+                                <field name="debut_validate" invisible="1"/>
+                                <field name="type_service" string="Type de frais"/>
+                                <field name="service_fee" attrs="{'readonly': [('type_service', 'in', ('tranches'))], 'invisible': [('type_service', 'in', ('tranches', 'aucun'))]}" string="Frais de transaction"/>
+                                <field name="type_contract" invisible="1"/>
+                                <field name="active" invisible="1"/>
+                            </group>
+                            <group colspan="2">
+                                <field name="is_active_subscription"/>
+                                <field name="exercice"/>
+                                <separator string="Informations Souscription" colspan="2"/>
+                                <field name="product_category_id" attrs="{'readonly': [('state','in',['pending','closed'])]}"/>
+                                <field name="product_id" domain="[('sale_ok','=',True)]" attrs="{'invisible': [('product_category_id','=',False)], 'readonly': [('state','in',['pending','closed'])]}"/>
+                                <field name="parameter_decompte" readonly="1" force_save="1"/>
+                                <field name="validate_package" invisible="1"/>
+                                <field name="transaction_no"/>
+                                <field name="transaction_no_limit" string=" " attrs="{'invisible': [('transaction_no', '!=', 'transaction_limit')]}"/>
+                                <field name="add_balance" readonly="1"/>
+                                <field name="amount" attrs="{'required': [('transaction_no', '=', 'transaction_limit')]}" string="Frais d’accès annuel"/>
+                                <field name="periodicity_id" attrs="{'readonly': [('state','in',['pending','closed'])]}"/>
+                                <field name="date_start" string="Date début" required="1" attrs="{'readonly': [('state','in',['pending','closed'])]}"/>
+                                <field name="date" string="Date fin" required="1" attrs="{'readonly': [('state','in',['pending','closed'])]}"/>
+                                <field name="diff_months" invisible="1"/>
+                                <field name="description_package"/>
+                                <field name="etat_facturation"/>
+                                <field name="etat_paiement"/>
+
+                            </group>
+                        </group>
+                        <separator string="Tranches" colspan="2" attrs="{'invisible': [('type_service', 'not in', ('tranches'))]}"/>
+                        <div style="text-align: right;" attrs="{'invisible': [('type_service', 'not in', ('tranches'))]}">
+                            <button name="update_data" type="object" string="Update Tranches" class="oe_link oe_edit_only" icon="fa-gratipay"/>
+                        </div>
+                        <field name="type_service_line_ids" nolabel="1" context="{'contract_id': id, 'transaction_no_limit': transaction_no_limit}" attrs="{'invisible': [('type_service', 'not in', ('tranches'))]}">
+                            <tree editable="bottom">
+                                <field name="id_tranche"/>
+                                <field name="tranche_de_no"/>
+                                <field name="tranche_a_no"/>
+                                <field name="frais_de_services"/>
+                            </tree>
+                        </field>
+                       
+                        <notebook>
+                            <page string='Consommation'>
+                                  <group string="Consommation" col="8" colspan="4">
+                                <field name="total_autorise" attrs="{'invisible': [('transaction_no', '=', 'transaction_illimit')]}"/>
+                                <field name="total_consomme"/>
+                                <field name="total_restant"/>
+                                <field name="total_depassement"/>
+                            </group>
+                            <group string="API" colspan="4" col="8">
+                                <field name="id_portnet" readonly="1"/>
+                                <field name="date_create_portnet" readonly="1"/>
+                                <field name="date_write_portnet" readonly="1"/>
+                                <field name="date_sync_portnet" readonly="1"/>
+                            </group> 
+                            </page>
+
+                            <page string='Facturation'>    
+                                <field name="invoice_ids" widget="one2many_tags" readonly="1">
+                                    <tree string="Invoices">
+                                        <field name="date_invoice" string="Date facture."/>
+                                        <field name="partner_id" string="Client."/>
+                                        <field name="number" string="Numéro"/>
+                                        <field name="user_id" string="Responsable"/>
+                                        <field name="date_due" string="Date échéance"/>
+                                        <field name="residual" string="Reste à payer"/>
+                                        <field name="amount_untaxed" string="HT"/>
+                                        <field name="amount_total" string="TTC"/>
+                                        <field name="state" string="Etat."/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string='Paiement'>    
+                                <field name="voucher_ids"  widget="one2many_tags"  readonly="1">
+                                    <tree string="Vouchers">
+                                        <field name="date" string="Date"/>
+                                        <field name="partner_id" string="Client"/>
+                                        <field name="reglement_method_id" string="Type de paiement"/>
+                                        <field name="journal_id" string="Méthode de paiement"/>
+                                        <field name="name" string="Mémo"/>
+                                        <field name="reference_delivery" string="Référence de la remise"/>
+                                        <field name="amount" string="Montant payé"/>
+                                        <field name="state" string="Etat"/>
+                                        <button name="open_records" type="object" string="Valider" class="oe_highlight"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="advanced_contract_tree_view_souscription" model="ir.ui.view">
+            <field name="name">advanced.souscription.tree.view</field>
+            <field name="model">res.contract</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree string="Souscriptions" colors="blue:state=='draft';green:state=='pending'">
+                    <field name="name" string="N° Souscriptions"/>
+                    <field name="template_id" string="Package"/>
+                    <field name="partner_categ_id" string="Rôle de l'opérateur"/>
+                    <field name="partner_id" string="Opérateur"/>
+                    <field name="date_start" string="Date début"/>
+                    <field name="date" string="Date fin"/>
+                    <field name="first_invoice_date" string="Date facturation"/>
+                    <field name="periodicity_id" string="Type de périodicité"/>
+                    <field name="product_category_id" string="Catégorie du produit"/>
+                    <field name="product_id"/>
+                    <field name="amount" string="Frais d’accès annuel"/>
+					<field name="service_fee" string="Frais de transaction"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="advanced_contract_search_souscription" model="ir.ui.view">
+            <field name="name">advanced.souscription.search</field>
+            <field name="model">res.contract</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search string="Souscriptions">
+                    <field name="name" filter_domain="[('name','ilike',self)]" string="Contrat"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <filter string="Brouillon" domain="[('state','=','draft')]"/>
+                    <filter string="En cours" domain="[('state','=','pending')]"/>
+                    <filter string="Clôturés" domain="[('state','=','closed')]"/>
+                    <filter string="Tacite reconduction" domain="[('tacite','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Client" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Statut" domain="[]" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!-- Action Ventes/Ventes/Souscriptions -->
+        <record id="action_contracts_souscription" model="ir.actions.act_window">
+            <field name="name">Souscriptions</field>
+            <field name="res_model">res.contract</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_template','=',False),('type_contract','=','package')]</field>
+            <field name="context">{'default_is_template':False,'default_type_contract':'package'}</field>
+            <field name="search_view_id" ref="advanced_contract_search_souscription"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cliquer ici pour créer un nouvelle souscription
+                </p>
+            </field>
+        </record>
+        <record id="action_contracts_tree_souscription" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="advanced_contract_tree_view_souscription"/>
+            <field name="act_window_id" ref="action_contracts_souscription"/>
+        </record>
+        <record id="action_contracts_form_souscription" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="advanced_contract_form_view_souscription"/>
+            <field name="act_window_id" ref="action_contracts_souscription"/>
+        </record>
+        <menuitem action="action_contracts_souscription" id="menu_souscription" name="Souscriptions" sequence="8" parent="base.menu_sales"/>
+        <!-- Modeles de Contract Form view inherit -->
+        <record id="advanced_contract_form_view_inherit_wt" model="ir.ui.view">
+            <field name="name">res.contract.form.inherit.wt</field>
+            <field name="model">res.contract</field>
+            <field name="inherit_id" ref="portnet_invoicing.advanced_contract_tmpl_form_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="type_contract" invisible="1"/>
+                </field>
+            </field>
+        </record>
+        <record id="portnet_invoicing.advanced_contract_form_view" model="ir.ui.view">
+            <field name="priority" eval="3"/>
+        </record>
+        <!-- Contract Form view inherit -->
+        <record id="advanced_contract_form_view_contract_main_inherit_wt" model="ir.ui.view">
+            <field name="name">res.contract.main.form.inherit.wt</field>
+            <field name="model">res.contract</field>
+            <field name="inherit_id" ref="portnet_invoicing.advanced_contract_form_view"/>
+            <field name="arch" type="xml">
+                <field name="template_id" position="attributes">
+                    <attribute name="domain">[('is_template','=',False),('type_contract','=','abonnement')]</attribute>
+                    <attribute name="context">{'default_is_template': False, 'default_type_contract': 'abonnement'}</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

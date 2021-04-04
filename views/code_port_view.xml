@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>  
+        <!-- Tree View -->  
+        <record id="code_port_tree_view" model="ir.ui.view">
+            <field name="name">code.port.tree.view</field>
+            <field name="model">code.port</field>
+            <field name="arch" type="xml">
+                <tree string="Port">
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="code_port_form_view" model="ir.ui.view">
+            <field name="name">code.port.form.view</field>
+            <field name="model">code.port</field>
+            <field name="arch" type="xml">
+                <form string="Port">
+                    <sheet string="Port">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                            <group>
+                                <field name="code"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Port -->
+        <record id="action_code_port" model="ir.actions.act_window">
+            <field name="name">Port</field>
+            <field name="res_model">code.port</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Cliquer ici pour créer un nouveau Port
+                </p>
+            </field>
+        </record>
+
+        <!-- menuitem -->
+        <menuitem action="action_code_port" id="menu_code_port" name="Port" parent="base.menu_base_config" />
+    </data>
+</openerp>
